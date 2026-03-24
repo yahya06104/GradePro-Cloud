@@ -160,7 +160,8 @@
         import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, writeBatch, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- CONFIG ---
-        const envConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        // Fix ReferenceError by setting the fallback object directly
+        const envConfig = typeof __firebase_config !== 'undefined' && __firebase_config ? JSON.parse(__firebase_config) : null;
         const firebaseConfig = {
           apiKey: "AIzaSyCXmEAitN9g1s12RCK85rou-Mev7Tq-qLU",
           authDomain: "gradepro-8584f.firebaseapp.com",
@@ -171,8 +172,6 @@
           measurementId: "G-G22PSRCEJC"
         };
         
-        // Fix: Renamed variable to avoid 'Identifier has already been declared' SyntaxError
-        const activeFirebaseConfig = envConfig || userConfig;
         const app = initializeApp(activeFirebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -387,15 +386,6 @@
                         <div ref={qrRef} className="inline-block p-4 border-2 border-dashed border-primary-200 rounded-xl mb-4"></div>
                         <div className="text-xs font-mono bg-slate-100 p-2 rounded text-slate-500">Session: {sessionId}</div>
                     </div>
-                </div>
-            );
-        }
-
-        function ProgressBar({ current, max, color, isSimulated = false }) {
-            const percent = max > 0 ? (current / max) * 100 : 0;
-            return (
-                <div className={`w-full rounded-full h-2.5 mt-1 overflow-hidden border ${isSimulated ? 'bg-blue-50 border-blue-200' : 'bg-slate-100 border-slate-200'}`}>
-                    <div className={`h-2.5 rounded-full ${color} ${isSimulated ? 'opacity-80' : ''}`} style={{ width: `${Math.min(percent, 100)}%` }}></div>
                 </div>
             );
         }
